@@ -28,7 +28,7 @@ my %mx_template_form=(
    len=>3, empty=>0},
   {ftype=>1, tag=>'comment', name=>'Comment', type=>'text',len=>60, empty=>1},
   {ftype=>2, tag=>'mx_l', name=>'Mail exchanges (MX)',
-   type=>['priority','mx','text'], fields=>3, len=>[5,30,20],
+   type=>['priority','mx','text'], fields=>3, len=>[5,50,20],
    empty=>[0,0,1],elabels=>['Priority','MX','comment']},
   {ftype=>0, name=>'Record info', no_edit=>1},
   {ftype=>4, name=>'Record created', tag=>'cdate_str', no_edit=>1},
