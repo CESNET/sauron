@@ -179,14 +179,12 @@ sub form_check_field($$$) {
     return 'port number required!' unless ($value > 0 && $value < 65535);
   } elsif ($type eq 'bool') {
     return 'boolean value required!' unless ($value =~ /^(t|f)$/);
-  } elsif ($type eq 'mac') { 
+  } elsif ($type eq 'mac') {
     return 'Ethernet address required!' if ($value !~ /^([0-9A-Fa-f]{12})$/ and $inetFamily4);
   } elsif ($type eq 'duid') {
-    
+
     $formduid = $value if $value !~ /^\s*$/;
-    return 'Empty field not allowed! (Only if IPv6 address is entered)' if $value =~ /^\s*$/ and !$empty and ((!$inetFamily4 and !$inetFamily6) || $inetFamily6);
-    return 'Empty DUID required! (IPv6 address not set)' if $value !~ /^\s*$/ and $inetFamily4 and !$inetFamily6;
-    return 'Valid DUID required!' if ($value !~ /^([0-9A-Fa-f]{24,40})$/ and $inetFamily6 and !$empty);
+    return 'Valid DUID required!' if (($value !~ /^([0-9A-Fa-f]{24,40})$/) and ($value !~ /^\s*$/));
   } elsif ($type eq 'iaid') {
     return 'Empty IAID required! (IPv6 address not set)' if $value !~ /^\s*$/ and !$inetFamily6;
     return 'IAID can\'t be use without DUID' if $value !~ /^\s*$/ and $inetFamily6 and !$formduid;
