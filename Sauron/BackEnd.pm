@@ -608,7 +608,7 @@ sub add_record_sql($$) {
 
 sub add_record($$) {
   my($table,$rec) = @_;
-  my($sqlstr,$res,$oid,@q);
+  my($sqlstr,$res,@q);
 
   return -130 unless ($table);
   return -131 unless ($rec);
@@ -619,8 +619,7 @@ sub add_record($$) {
   #print "sql '$sqlstr'\n";
   $res=db_exec($sqlstr);
   return -1 if ($res < 0);
-  $oid=db_lastoid();
-  db_query("SELECT id FROM $table WHERE OID=$oid",\@q);
+  db_query("SELECT lastval()",\@q);
   return -2 if (@q < 1);
   return $q[0][0];
 }
