@@ -1298,6 +1298,43 @@ if ($bind_conf) {
 			     "$target\\000\n" if ($tiny_conf);
 	}
       }
+
+	# SSHFP records
+	undef @q;
+	db_query("SELECT a.domain,a.ttl,a.expiration," .
+			" b.algorithm,b.hashtype,b.fingerprint " .
+			"FROM hosts a, sshfp_entries b, zones z " .
+			"WHERE a.zone=z.id AND z.id=$zoneid " .
+			"AND (a.type=1 OR a.type=11) AND a.id=b.ref AND b.type=1 " .
+			"ORDER BY a.domain,b.algorithm,b.hashtype,b.fingerprint;",\@q);
+	error(db_errormsg()) if (db_errormsg());
+	if (@q > 0) {
+		print ZONEFILE ";\n;\n; SSHFP records\n;\n" if ($bind_conf);
+		for $i (0 .. $#q) {
+			$domain=remove_origin($q[$i][0],$origin);
+			if ($domain =~ /\.$/) {
+				error("Out-of-zone SSHFP record skipped: $q[$i][0]");
+				next;
+			}
+			if ($domain =~ /\.($delegation_mask)$/) {
+				error("SSHFP in delegated zone skipped: $q[$i][0]");
+				next;
+			}
+			if (($q[$i][2] > 0) && ($q[$i][2] < $time_now_ticks)) {
+				error("Skipping expired SSHFP record: $q[$i][0]");
+				next;
+			}
+			$ttl=$q[$i][1];
+			$ttl='' unless ($ttl > 0);
+			$algorithm=($q[$i][3] > 0 ? $q[$i][3] : 0);
+			$hashtype=($q[$i][4] > 0 ? $q[$i][4] : 0);
+			$fingerprint=$q[$i][5];
+			printf ZONEFILE $ZFORMAT, $domain,$ttl,$class,'SSHFP',
+						 "$algorithm $hashtype $fingerprint" if ($bind_conf);
+			# XXX: TINYDNSFILE
+		}
+	}
+
     }
 
     # custom zone file entries

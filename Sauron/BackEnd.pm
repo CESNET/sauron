@@ -1093,6 +1093,12 @@ sub delete_server($) {
             "WHERE z.server=$id AND h.zone=z.id AND a.type=1 AND a.ref=h.id)");
   if ($res < 0) { db_rollback(); return -21; }
 
+  # sshfp_entries
+  $res=db_exec("DELETE FROM sshfp_entries WHERE id IN ( " .
+	       "SELECT a.id FROM sshfp_entries a, zones z, hosts h " .
+            "WHERE z.server=$id AND h.zone=z.id AND a.type=1 AND a.ref=h.id)");
+  if ($res < 0) { db_rollback(); return -21; }
+
   # group_entries
   $res=db_exec("DELETE FROM group_entries WHERE id IN ( " .
 	       "SELECT a.id FROM group_entries a, zones z, hosts h " .
@@ -1778,6 +1784,9 @@ sub get_host($$) {
   get_array_field("srv_entries",6,"id,pri,weight,port,target,comment",
 		  "Priority,Weight,Port,Target",
 		  "type=1 AND ref=$id ORDER BY port,pri,weight",$rec,'srv_l');
+  get_array_field("sshfp_entries",6,"id,algorithm,hashtype,fingerprint,comment",
+		  "Algorithm,Type,Fingerprint",
+		  "type=1 AND ref=$id ORDER BY algorithm,hashtype,fingerprint",$rec,'sshfp_l');
 
   get_array_field("hosts",4,"0,id,domain,type","Domain,cname",
 	          "type=4  AND alias=$id ORDER BY domain",$rec,'alias_l');
@@ -1916,6 +1925,10 @@ sub update_host($) {
 			"pri,weight,port,target,comment,type,ref",
 			'srv_l',$rec,"1,$id");
   if ($r < 0) { db_rollback(); return -18; }
+  $r=update_array_field("sshfp_entries",5,
+			"algorithm,hashtype,fingerprint,comment,type,ref",
+			'sshfp_l',$rec,"1,$id");
+  if ($r < 0) { db_rollback(); return -19; }
 
   $r=update_array_field("a_entries",4,"ip,reverse,forward,host",
 			'ip',$rec,"$id");
@@ -1993,6 +2006,10 @@ sub delete_host($) {
   $res=db_exec("DELETE FROM srv_entries WHERE type=1 AND ref=$id;");
   if ($res < 0) { db_rollback(); return -11; }
 
+  # sshfp_entries
+  $res=db_exec("DELETE FROM sshfp_entries WHERE type=1 AND ref=$id;");
+  if ($res < 0) { db_rollback(); return -13; }
+
   # group_entries
   $res=db_exec("DELETE FROM group_entries WHERE host=$id;");
   if ($res < 0) { db_rollback(); return -12; }
@@ -2051,6 +2068,11 @@ sub add_host($) {
   $res = add_array_field('srv_entries','pri,weight,port,target,comment',
 			 'srv_l',$rec,'type,ref',"1,$id");
   if ($res < 0) { db_rollback(); return -6; }
+
+  # SSHFPs
+  $res = add_array_field('sshfp_entries','algorithm,hashtype,fingerprint,comment',
+			 'sshfp_l',$rec,'type,ref',"1,$id");
+  if ($res < 0) { db_rollback(); return -9; }
 
   # ARECs
   if ($rec->{type}==7) {

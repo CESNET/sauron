@@ -27,7 +27,7 @@ load_browser_config();
 
 %host_types=(0=>'Any type',1=>'Host',2=>'Delegation',3=>'Plain MX',
 	     4=>'Alias',5=>'Printer',6=>'Glue record',7=>'AREC Alias',
-	     8=>'SRV record',9=>'DHCP only',10=>'Zone',
+	     8=>'SRV record',9=>'DHCP only',10=>'Zone',11=>'SSHFP only',
 	     101=>'Host reservation');
 
 %host_form = (
@@ -95,6 +95,9 @@ load_browser_config();
   {ftype=>2, tag=>'printer_l', name=>'PRINTER entries', no_empty=>1,
    type=>['text','text'], fields=>2,len=>[40,20], empty=>[0,1], 
    elabels=>['PRINTER','comment'], iff=>['type','[15]']},
+  {ftype=>2, tag=>'sshfp_l', name=>'SSHFP', type=>['int','int','base64','text'],
+   fields=>4, no_empty=>1,
+   len=>[5,5,80,15], empty=>[0,0,0,1], elabels=>['Algorithm','Type','Fingerprint','comment'], iff=>['type','1']},
 
   {ftype=>0, name=>'Aliases', no_edit=>1, iff=>['type','1']},
   {ftype=>8, tag=>'alias_l', name=>'Aliases', fields=>3, iff=>['type','1']},

@@ -115,6 +115,7 @@ if ($opt_type) {
   elsif ($opt_type eq 'cname') { $type=4; }
   elsif ($opt_type eq 'arec') { $type=7; }
   elsif ($opt_type eq 'srv') { $type=8; }
+  elsif ($opt_type eq 'sshfp') { $type=11; }
   else {
     fatal("unknown type for option --type");
   }

@@ -225,7 +225,7 @@ if ($opt_help || ($opt_user eq '' &&  $opt_list eq '')) {
         "   --add=\"rhf,<field>=0|1\"               add RequiredHostField-setting\n",
 	"   --add=\"flag,<name>\"                   add Privilege flag:\n",
         "                                            CNAME,SCNAME,AREC,MX,DELEG,\n",
-        "                                            DHCP,PRINTER,SRV,RESERV\n",
+        "                                            DHCP,PRINTER,SRV,SSHFP,RESERV\n",
         "   --del=<id>                            delete rule by id\n",
         "   --delall                              delete all rules\n",
         "\n";
@@ -593,11 +593,11 @@ if (defined $opt_add) {
     }
     elsif ($type==13) {
       print "Enter Privilege Flag (cname,scname,arec,mx,deleg,dhcp," .
-	    "printer,srv,reserv): ";
+	    "printer,srv,sshfp,reserv): ";
       chomp($tmp = <STDIN>);
       $tmp =~ s/\s+|\s+$//g;
       $tmp=uc($tmp);
-      unless ($tmp =~ /^(CNAME|SCNAME|AREC|MX|DELEG|GLUE|DHCP|PRINTER|SRV|RESERV)$/) {
+      unless ($tmp =~ /^(CNAME|SCNAME|AREC|MX|DELEG|GLUE|DHCP|PRINTER|SRV|SSHFP|RESERV)$/) {
 	print "Invalid flag name\n"; goto add_i;
       }
       $mode=$tmp;
@@ -716,7 +716,7 @@ if (defined $opt_add) {
     $tmp =~ s/^\s+|\s+$//g;
     $tmp = uc($tmp);
     fatal("invalid field and/or mode '$tmp'")
-      unless ($tmp =~ /^(CNAME|SCNAME|AREC|MX|DELEG|GLUE|DHCP|PRINTER|SRV|RESERV)$/);
+      unless ($tmp =~ /^(CNAME|SCNAME|AREC|MX|DELEG|GLUE|DHCP|PRINTER|SRV|SSHFP|RESERV)$/);
     $mode=$1;
     $ref=-1;
   }
