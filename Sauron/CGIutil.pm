@@ -210,6 +210,10 @@ sub form_check_field($$$) {
       unless ($value =~ /^\s*(\d{8})?-(\d{8})?\s*$/);
     return 'Invalid (empty) date range' unless ($value =~ /\d+/);
     return '';
+  } elsif ($type eq 'base64') {
+    return 'Valid base64 required!'
+      unless valid_base64($value);
+    return '';
   } else {
     return "unknown typecheck for form_check_field: $type !";
   }

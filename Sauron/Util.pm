@@ -26,6 +26,7 @@ sub write2log{
    
 @ISA = qw(Exporter); # Inherit from Exporter
 @EXPORT = qw(
+	     valid_base64
 	     valid_domainname_check
 	     valid_domainname
 	     valid_texthandle
@@ -69,6 +70,15 @@ sub write2log{
 	    );
 
 
+
+sub valid_base64($) {
+  my($base64)= @_;
+
+  return 1
+    if ($base64 =~ /^[a-zA-Z0-9\/\+=]*$/);
+
+  return 0;
+}
 
 # returns nonzero in case given domainname is valid
 sub valid_domainname_check($$) {
