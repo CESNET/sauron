@@ -214,6 +214,10 @@ sub form_check_field($$$) {
     return 'Valid base64 required!'
       unless valid_base64($value);
     return '';
+  } elsif ($type eq 'hex') {
+    return 'Valid hexadecimal value required!'
+      unless valid_hex($value);
+    return '';
   } else {
     return "unknown typecheck for form_check_field: $type !";
   }

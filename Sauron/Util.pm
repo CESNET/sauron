@@ -29,6 +29,7 @@ sub write2log{
 	     valid_base64
 	     valid_domainname_check
 	     valid_domainname
+	     valid_hex
 	     valid_texthandle
 	     is_cidr
 	     is_ip
@@ -164,6 +165,15 @@ sub valid_domainname($) {
   my($domain) = @_;
 
   return valid_domainname_check($domain,0);
+}
+
+sub valid_hex($) {
+  my($hex)= @_;
+
+  return 1
+    if ($hex =~ /^[a-fA-F0-9]*$/);
+
+  return 0;
 }
 
 sub valid_texthandle($) {
