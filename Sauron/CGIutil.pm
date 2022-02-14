@@ -1061,7 +1061,12 @@ sub display_form($$) {
 	  $val =~ s/\/32$// if ($rec->{type}[$k-1] eq 'ip');
 	  $val =~ s/\/128$// if ($rec->{type}[$k-1] eq 'ip');
 	  $val='&nbsp;' if ($val eq '');
-	  print td($val);
+	  if (exists $rec->{len} && $rec->{len}[$k-1]) {
+	    my $len = $rec->{len}[$k-1];
+	    print "<TD style=\"max-width: ${len}ch; overflow-wrap: anywhere; word-break: break-all;\">$val</TD>\n";
+	  } else {
+	    print "<TD>$val</TD>\n";
+	  }
 	}
 	print "</TR>";
       }
