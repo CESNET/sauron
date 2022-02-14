@@ -148,7 +148,7 @@ my %host_form = (
    empty=>[0,1],elabels=>['DHCP','comment'], iff=>['type','[15]']},
   {ftype=>2, tag=>'sshfp_l', name=>'SSHFP entries', no_empty=>1, fields=>4,len=>[2,2,60,10],
    empty=>[0,0,0,1],elabels=>['Algorithm','Hashtype','Fingerprint','comment'],
-   type=>['enum','enum','base64','text'], enum=>[\%sshfp_algorithms, \%sshfp_types, undef, undef],
+   type=>['enum','enum','hex','text'], enum=>[\%sshfp_algorithms, \%sshfp_types, undef, undef],
    iff=>['type','1'],maxlen=>[5,5,1024,10],addempty=>[-1,-1,0,0]},
 
 
@@ -322,7 +322,7 @@ my %new_host_form = (
   {ftype=>0, name=>'SSHFP records', iff=>['type','1']},
   {ftype=>2, tag=>'sshfp_l', name=>'SSHFP entries', fields=>4,len=>[2,2,60,10],
    empty=>[0,0,0,1],elabels=>['Algorithm','Hashtype','Fingerprint','comment'],
-   type=>['enum','enum','base64','text'], enum=>[\%sshfp_algorithms, \%sshfp_types, undef, undef],
+   type=>['enum','enum','hex','text'], enum=>[\%sshfp_algorithms, \%sshfp_types, undef, undef],
    iff=>['type','1'],maxlen=>[5,5,1024,10],addempty=>[-1,-1,0,0]},
 
   {ftype=>0, name=>'Record info', iff=>['type','[147]']},
