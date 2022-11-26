@@ -2,7 +2,6 @@ dnl $Id$
 dnl 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(sauron)
-AC_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR(aux)
 
 
@@ -11,7 +10,6 @@ HOST_TYPE=$host
 AC_DEFINE_UNQUOTED(HOST_TYPE,"$host")
 
 dnl Checks for programs.
-AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -36,32 +34,14 @@ AC_PATH_PROG(PERL,perl)
 
 dnl Checks for libraries.
 
-dnl AC_CHECK_LIB(jpeg, jpeg_read_header, ,[
-dnl echo "Cannot find libjpeg or you have too old version."
-dnl exit 1
-dnl ])
-
 
 dnl Checks for header files.
-
-AC_HEADER_STDC
-AC_CHECK_HEADERS(unistd.h getopt.h string.h)
-dnl AC_CHECK_HEADERS(jpeglib.h,,[
-dnl echo "Cannot find jpeglib.h  You need libjpeg v6 (or later)."
-dnl exit 1
-dnl ])
 
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
-AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(int)
-
-
 
 dnl Checks for library functions.
-AC_CHECK_FUNCS(getopt_long, break, [GNUGETOPT="getopt.o getopt1.o"])
-AC_SUBST(GNUGETOPT)
 AC_SUBST(PERL_DB_BACKEND)
 
 echo "------------------------------------------------------------"
