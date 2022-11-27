@@ -15,11 +15,11 @@ test:
 
   services:
     - name: postgres
-  
+
   variables:
     POSTGRES_DB: saurondb
     POSTGRES_USER: sauronuser
-    POSTGRES_PASSWORD: "$RANDOM.$RANDOM"
+    POSTGRES_PASSWORD: "$PROJECT_SEED.$RANDOM.$RANDOM"
 
   script:
     - ./configure
