@@ -47,7 +47,7 @@ test:
     - /usr/local/sauron/sauron --bind example ./gen
     - /usr/local/sauron/sauron --dhcp example ./gen
     - /usr/local/sauron/sauron --dhcp6 example ./gen
-    - wget "https://ipmil.civ.zcu.cz/hostmaster/sauron/-/jobs/artifacts/$CI_COMMIT_REF_NAME/download?job=test" -O latest.zip || true
+    - wget "https://ipmil.civ.zcu.cz/hostmaster/sauron/-/jobs/artifacts/$CI_DEFAULT_BRANCH/download?job=test" -O latest.zip || true
     - unzip latest.zip -d latest || true
     - diff -ur latest/gen/ gen/ > gen.diff || touch gen.diff
 
