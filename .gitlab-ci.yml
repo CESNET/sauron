@@ -1,0 +1,64 @@
+image:
+  name: debian:bullseye
+
+test:
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends ca-certificates perl libnet-dns-perl libnet-netmask-perl libdbd-pg-perl libcgi-pm-perl make postgresql-client unzip wget
+    - echo yes | cpan -i Crypt::RC5
+
+  cache:
+    paths:
+      - named.root
+      - ieee-oui.txt
+    when: always
+
+  services:
+    - name: postgres
+  
+  variables:
+    POSTGRES_DB: saurondb
+    POSTGRES_USER: sauronuser
+    POSTGRES_PASSWORD: "$RANDOM.$RANDOM"
+
+  script:
+    - ./configure
+    - make install
+    - echo "export PERL5LIB=/usr/local/sauron" > /etc/profile.d/sauron.sh
+    - . /etc/profile.d/sauron.sh
+    - f=/usr/local/etc/sauron/config
+    - sed -i 's/\(\$DB_DSN\s*=\s*\).*/\1"'"dbi:Pg:dbname=$POSTGRES_DB;host=postgres"'";/' "$f"
+    - sed -i 's/\(\$DB_USER\s*=\s*\).*/\1"'"$POSTGRES_USER"'";/' "$f"
+    - sed -i 's/\(\$DB_PASSWORD\s*=\s*\).*/\1"'"$POSTGRES_PASSWORD"'";/' "$f"
+    - echo y | /usr/local/sauron/createtables
+    - echo "INSERT INTO servers (name, hostname) VALUES ('example', 'sauron.example.com');" > init.sql
+    - echo "INSERT INTO nets (server, net, netname, vlan, subnet) VALUES (1, INET '10.10.0.0/16', 'net', 1, false);" >> init.sql
+    - echo "INSERT INTO nets (server, net, netname, vlan, subnet) VALUES (1, INET '2001:db8::/32', 'net6', 1, false);" >> init.sql
+    - /usr/local/sauron/runsql ./init.sql
+    - /usr/local/sauron/status
+    - test -s named.root || (rm -fv named.root && wget 'ftp://ftp.rs.internic.net/domain/named.root')
+    - /usr/local/sauron/import-roots default ./named.root
+    - test -s ieee-oui.txt || (rm -fv ieee-oui.txt && wget 'http://sid.ethz.ch/debian/bugs/oui/arp-scan-1.6/ieee-oui.txt')
+    - /usr/local/sauron/import-ethers ./ieee-oui.txt
+    - /usr/local/sauron/import-zone example middle.earth test/middle.earth.zone
+    - echo "UPDATE zones SET hostmaster=CONCAT('hostmaster@middle.eaarth', name) WHERE hostmaster IS NULL;" > import.sql
+    - /usr/local/sauron/runsql ./import.sql
+    - /usr/local/sauron/generatehosts example middle.earth 'test0:N:' '2001:db8::1:1' 5 --commit --info ':DEP::'
+    - /usr/local/sauron/import-dhcp --global example test/dhcpd.conf
+    - mkdir gen
+    - /usr/local/sauron/sauron --bind example ./gen
+    - /usr/local/sauron/sauron --dhcp example ./gen
+    - /usr/local/sauron/sauron --dhcp6 example ./gen
+    - wget "https://ipmil.civ.zcu.cz/hostmaster/sauron/-/jobs/artifacts/$CI_COMMIT_REF_NAME/download?job=test" -O latest.zip || true
+    - unzip latest.zip -d latest || true
+    - diff -ur latest/gen/ gen/ > gen.diff || touch gen.diff
+
+  tags:
+    - privileged
+
+  artifacts:
+    paths:
+      - gen.diff
+      - gen/*.conf
+      - gen/*.zone
+      - gen/named.ca
