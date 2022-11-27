@@ -124,6 +124,9 @@ unless ($pzoneid > 0) {
   foreach $rtmp (@{$rec->{AAAA}}) { push @{$zonehash{ip}},[0,$rtmp,'true','true']; }
 
   @soa = split(/\s+/,$rec->{SOA});
+  $zonehash{hostmaster}=$soa[1];
+  $zonehash{hostmaster} =~ s/\./@/;
+  $zonehash{hostmaster} =~ s/\.$//;
   $zonehash{serial}=$soa[2];
   $zonehash{refresh}=$soa[3];
   $zonehash{retry}=$soa[4];

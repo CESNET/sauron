@@ -41,8 +41,6 @@ test:
     - test -s ieee-oui.txt || (rm -fv ieee-oui.txt && wget 'http://sid.ethz.ch/debian/bugs/oui/arp-scan-1.6/ieee-oui.txt')
     - /usr/local/sauron/import-ethers ./ieee-oui.txt
     - /usr/local/sauron/import-zone example middle.earth test/middle.earth.zone
-    - echo "UPDATE zones SET hostmaster=CONCAT('hostmaster@middle.eaarth', name) WHERE hostmaster IS NULL;" > import.sql
-    - /usr/local/sauron/runsql ./import.sql
     - /usr/local/sauron/generatehosts example middle.earth 'test0:N:' '2001:db8::1:1' 5 --commit --info ':DEP::'
     - /usr/local/sauron/import-dhcp --global example test/dhcpd.conf
     - mkdir gen
