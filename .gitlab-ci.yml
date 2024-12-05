@@ -1,26 +1,34 @@
-image:
-  name: debian:bullseye
-
+---
 test:
   before_script:
-    - apt-get update -qq
-    - apt-get install -y --no-install-recommends ca-certificates perl libnet-dns-perl libnet-netmask-perl libdbd-pg-perl libcgi-pm-perl make postgresql-client unzip wget
-    - echo yes | cpan -i Crypt::RC5
-
+    - |
+      apt-get update -qq
+      apt-get install -y --no-install-recommends \
+        ca-certificates \
+        perl \
+        libnet-dns-perl \
+        libnet-ip-perl \
+        libnet-netmask-perl \
+        libdbd-pg-perl \
+        libcgi-pm-perl \
+        make \
+        postgresql-client \
+        unzip \
+        wget
+      echo yes | cpan -i Crypt::RC5
   cache:
     paths:
       - named.root
       - ieee-oui.txt
     when: always
-
+  image:
+    name: "debian:bookworm"
   services:
-    - name: postgres
-
+    - name: postgres:15
   variables:
     POSTGRES_DB: saurondb
     POSTGRES_USER: sauronuser
     POSTGRES_PASSWORD: "$PROJECT_SEED.$RANDOM.$RANDOM"
-
   script:
     - ./configure
     - make install
@@ -43,6 +51,7 @@ test:
     - /usr/local/sauron/import-zone example middle.earth test/middle.earth.zone
     - /usr/local/sauron/generatehosts example middle.earth 'test0:N:' '2001:db8::1:1' 5 --commit --info ':DEP::'
     - /usr/local/sauron/import-dhcp --global example test/dhcpd.conf
+    - PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" PGHOST=postgres pg_dump -Fp "$POSTGRES_DB" > sauron-example.sql
     - mkdir gen
     - /usr/local/sauron/sauron --bind example ./gen
     - /usr/local/sauron/sauron --dhcp example ./gen
@@ -50,13 +59,12 @@ test:
     - wget "https://ipmil.civ.zcu.cz/hostmaster/sauron/-/jobs/artifacts/$CI_DEFAULT_BRANCH/download?job=test" -O latest.zip || true
     - unzip latest.zip -d latest || true
     - diff -ur latest/gen/ gen/ > gen.diff || touch gen.diff
-
   tags:
     - privileged
-
   artifacts:
     paths:
       - gen.diff
       - gen/*.conf
       - gen/*.zone
       - gen/named.ca
+      - sauron-example.sql
