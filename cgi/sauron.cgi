@@ -203,7 +203,7 @@ unless (is_cidr($remote_addr)) {
 
 ($scookie = cookie(-name=>"sauron-$SERVER_ID")) =~ s/[^A-Fa-f0-9]//g;
 if ($scookie) {
-  fix_utmp($SAURON_USER_TIMEOUT);
+  fix_utmp($SAURON_USER_TIMEOUT, 1);
   unless (load_state($scookie,\%state)) {
     logmsg("notice","invalid cookie ($scookie) supplied by $remote_addr");
     undef $scookie;
@@ -667,6 +667,7 @@ sub login_auth() {
   print end_html();
   save_state($scookie,\%state);
   load_state($scookie,\%state) if ($SAURON_AUTH_MODE==1);
+  fix_utmp($SAURON_USER_TIMEOUT*2, 0);
   exit;
 }
 
