@@ -26,7 +26,7 @@ REQUIREMENTS
 		- Digest::HMAC module
 		- Digest::SHA1 module
 		- MIME::Base64
-		- Crypt::RC5
+		- Crypt::Cipher::RC5
 	- PostgresSQL [7.4 or newer (may work fine with earlier 7.x versions)] 
 	  (or add support to your favorite db yourself :)
 	- www-server (Apache or any other www-server with CGI support)

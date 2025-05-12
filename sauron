@@ -9,7 +9,7 @@ require 5;
 use Net::Netmask;
 use Getopt::Long;
 use MIME::Base64;
-use Crypt::RC5;
+use Crypt::Cipher::RC5;
 use Sauron::Util;
 use Sauron::DB;
 use Sauron::BackEnd;
@@ -2803,7 +2803,7 @@ sub print_keys_acls($) {
 		  error("Skipping key with empty secret key: $name");
 		  next;
 	      }
-	      my $h = Crypt::RC5->new($SAURON_KEY,16);
+	      my $h = Crypt::Cipher::RC5->new($SAURON_KEY,16);
 	      my $dkey = encode_base64($h->decrypt(decode_base64($key)));
 	      chomp($dkey);
 

@@ -1,3 +1,7 @@
+0.7.5
+	[project moved to https://github.com/CESNET/sauron ] 
+	- change libcrypt-cb5-perl to libcryptx-perl
+
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]
 
