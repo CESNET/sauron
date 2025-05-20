@@ -1,6 +1,7 @@
 0.7.5
-	[project moved to https://github.com/CESNET/sauron ] 
+	[project moved to https://github.com/CESNET/sauron ]
 	- change libcrypt-cb5-perl to libcryptx-perl
+	- the username can be up to 64 characters long by Michal Švamberg
 
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]
@@ -14,32 +15,32 @@ CVS-CURRENT
 	- fix import-zone to handle SRV entries and update CGI interface
 	  to allow SRV, MX, CNAME and NS entries to be upto 63 characters
 	  by Frank Crawford.
-        - fix to incorrect mapping of $DOMAIN to $domain by Scott Olson.  
+	- fix to incorrect mapping of $DOMAIN to $domain by Scott Olson.
 	- user permissions display printout fix by Riku Meskanen.
 	- new vlan form Description field length fix by Riku Meskanen.
 	- sort vlan display by columns patch by Riku Meskanen.
 	- patch recording host move zone to history by Riku Meskanen.
 	- status script patch to report Net::IP version by Riku Meskanen.
 	- moduser (modgroup) change (and many small fixes) by Riku Meskanen,
-	  added capability to bind hostmask and delmask to a zone, fixed most 
-	  command line and interactive mode help and syntax differences, 
+	  added capability to bind hostmask and delmask to a zone, fixed most
+	  command line and interactive mode help and syntax differences,
 	  added more consistency checks etc.
 	- added IPv6 records support to import-roots fulfilling recommendation
-	  to everybody add IPv6 root hints regardless site IPv6 current usage. 
+	  to everybody add IPv6 root hints regardless site IPv6 current usage.
 	  This change requires Net::IP module and brings in powerful IPv4 and
 	  IPv6 manipulation utilities. Import-roots change by Riku Meskanen.
 	- add allow-query-cache and allow-notify option blocks by Riku Meskanen
 	- fix: slave to inherit keys & acls configs from master as defined
 	- fix: Makefile.in add sql/dbconvert_1.3to1.4 as installable file
 	- add User, Dept, Location, Email, HINFO fields and groups
-          to restricted host form
+	  to restricted host form
 	- new feature to select download CSV time format by Riku Meskanen
 	- new Search Field: Expiration by Riku Meskanen
 	- fix import-roots update functionality by Riku Meskanen
 	- forward zone port capability added by Riku Meskanen (db-version 1.4)
 	- new config option: SAURON_DNSNAME_CHECK_MODE  allows now
 	  less strict domain name checking (more AD compatible)
-	- new feature: custom DHCP global settings can now be definedo	
+	- new feature: custom DHCP global settings can now be definedo
 	  by Riku Meskanen
 	- fix to ACL/key generation by Riku Meskanen
 	- typo fixes
@@ -49,7 +50,7 @@ CVS-CURRENT
 	- when host with 'ether aliases' is deleted, expire these host entries
 	  (in addition of removing the ether alias pointer)
 	- CGI interface: fix to zone selection bug (if SAURON_PRIVILEGE_MODE=1)
-	
+
 0.7.2
 	- remove-hosts: new option --host by Otto Fuetterer
 	- modhosts: now Ethernet address can be uses as selection criteria
@@ -77,24 +78,24 @@ CVS-CURRENT
 	- generatehosts: fix to :N: parameter handling by Ken McKinlay
 	- new utility: export-hosts to export host data in CSV format
 	- moduser: added ability to add group(s) to user from command line
-	- sauron: fix to named.conf "logging" section generation 
+	- sauron: fix to named.conf "logging" section generation
 	  by Riku Meskanen
 	- CGI interface: login debugging support by Riku Meskanen
-	- CGI browser: fix to "info" field searching and support for 
+	- CGI browser: fix to "info" field searching and support for
 	  "dhcp only" records by Erik Ruwalder
 	- dbformat changes: new fields: users.person
 	- new utility: export-ip-list for generating lists of active
 	  IPs in given (sub)nets (for automatically updating access/accounting
 	  lists in firewalls)
-	- CGI interface: new command "New Search" in Hosts menu	
+	- CGI interface: new command "New Search" in Hosts menu
 	- import: fixed IP number parsing (named.conf)
 	- CGI interface: fixed "-> This Subnet" button in host display
 	- CGI interface: fixed "Show Hosts" button in network/subnet display
 	- moduser/modgroup: now lists also IDs for group memberships,
 	  making it easier to remove group membership from a user
-	- fixed server selection bug in web interface	
+	- fixed server selection bug in web interface
 	- cleaned up import-ethers (also added --verbose option)
-	
+
 0.7.1
 	- added "subgroups" for defining additional group(s) for host(s),
 	  currently subgroup memberships are used when generating DHCP class
@@ -112,19 +113,19 @@ CVS-CURRENT
 	- CGI interface: now advertises "Save Defaults" command to
 	  users without saved defaults
 	- CGI interface: added ability to search by asset IDs
-	- initial "plugin" support for CGI interface 
+	- initial "plugin" support for CGI interface
 	  (one sample/test plugin provided as an example)
 	- new command "Clear Defaults" in web interface
 	  patch by Michael S. Liebman <m-liebman@northwestern.edu>
 	- status command now detecs also zone/server changes
 	  (previously only host changes were detected)
 	- import-dhcp: support for multiple host entries with same
-	  MAC and fixes to MAC address parsing  
+	  MAC and fixes to MAC address parsing
 	  by Spencer H Visick <visick@eng.utah.edu>
 	- update-dhcp-info: now supports also logfiles generated by
 	  Solaris syslogd
 	- now returns all results when using "Download results in CVS format"
-	  option when searching hosts 
+	  option when searching hosts
 	- new configuration option SAURON_HINFO_MODE to set the
 	  behaviour of (host) HINFO fields when adding/editing hosts
 	  (see config.in for more info)
@@ -142,7 +143,7 @@ CVS-CURRENT
           limiting what can be used in some host record
 	  fields (dept,location,asset_id) by server and by
 	  user group
-	- VLAN names now can be in mixed-case (before only 
+	- VLAN names now can be in mixed-case (before only
 	  lower-case was allowed)
 	- support for "DHCP only" entries without IP
 	  (just MAC address)
@@ -150,14 +151,14 @@ CVS-CURRENT
 	  that are loaded only when needed (should make
 	  code more manageable and maybe a even slightly faster)
 	- added support for Apache (external) authentication
-	
+
 0.7.0
 	- added new utility import-nets for importing/updating
 	  nets (and VLANs) from a CSV file
 	- added support for custom DHCP classes
 	- removed hosts	show up as "pending" changes to zone
 	  (before only new hosts or modified hosts showed up)
-	- added new user/group privileges that can be used to 
+	- added new user/group privileges that can be used to
 	  control what type records user can add
 	- improved code for detecting wheter zone serial should
 	  be increased or not (detects removed hosts and work
@@ -178,23 +179,23 @@ CVS-CURRENT
 	    - new table 'vmps'
 	    - vlans: new column 'vlanno'
 	    - zones: new column 'rdate'
-	
+
 0.6.2
 	- fixed dates displayed (month was off by one) by last command
 	  and lastlog display in web-interface
 	- fixed bug when copying reverse zones that left wrong
 	  value in reversenet field
 	- new user privileges:
-	  - templatemask & groupmask for granting userss access to 
-	    greate & modify templates/groups with names matching to a 
+	  - templatemask & groupmask for granting userss access to
+	    greate & modify templates/groups with names matching to a
 	    regular expression
-	  - deletemask for granting users privilige to only remove hosts 
+	  - deletemask for granting users privilige to only remove hosts
 	    that match a regular expression
 	  - reqhostfield for fine tuning what fields in host add/edit
 	    forms are mandatory and which are optional
 	- new command: update-hosts to update hosts info from a CSV file
 	- custom zone file entries can be specified for each master
-	  zone, these lines will appear "as is" at the end of generated 
+	  zone, these lines will appear "as is" at the end of generated
 	  zone file
 	- preliminary support for DBI (DBD:Pg), use --with-DBI option
 	  when running configure to enable or simply change the DB.pm
@@ -203,15 +204,15 @@ CVS-CURRENT
 	- configuration file directory is now patched into Sauron.pm
 	  during install
 	- removed (unnesessary) dependency on "warnings" module
-	
-0.6.1	
+
+0.6.1
 	- sauron: not anymore generating "broken" aliases to expired
 	  hosts (if a host has expired aliases are now considered expired too)
 	- added new utility remove-hosts that removes hosts based on
 	  list of IPs or MACs read from a file
 	- sauron: bug fixes for $DOMAIN substitution in MX records and
 	  CNAME alias generation for zone A record.
-	- sauron: added --dhcpclass option	
+	- sauron: added --dhcpclass option
 	- check-pending: added --dir & --cmd options for easily running
 	  given command if there is pending hosts for server
 	- sauron.cgi: added "Ping Sweep" button to scan selected network
@@ -220,7 +221,7 @@ CVS-CURRENT
 	- sauron.cgi: added "-> This Subnet" jump button in host display
 	- fixed several bugs in special "CNAME hack" delegations for smaller
 	  than class-C nets
-	
+
 0.6.0
 	- status: added --versions option for displaying module versions
 	- fixed problem with newer Pg.pm modules that caused
@@ -232,10 +233,10 @@ CVS-CURRENT
 	  a zone file or directly from DNS (using zone transfer)
 	- sauron: now uses temp files when creating new configuration files
 	- added delgroup utility
-	- status: now returns with exit code 2, when  run using 
+	- status: now returns with exit code 2, when  run using
 	  option --pending=server and there are pending host changes
 	  (returns 0 otherwise, or 1 if there was an error)
-	  option 
+	  option
 	- initial draft of User's Guide now included
 	- Sauron::UtilDhcp module was missing from Makefile.in
 	- various typo fixes
@@ -256,20 +257,20 @@ CVS-CURRENT
 	  middle of log file, now also fills dhcp_info field with information
 	  about latest lease
 	- general code cleanup for command-line utilities (no more warnings)
-	- backend: add_net now adds default auto assign ranges, 
+	- backend: add_net now adds default auto assign ranges,
 	  update_net now also checks that auto assign is inside given net
 	- frames mode now (hopefully) works better with non-Mozilla
 	  browsers
 	- added external authentication support (sample authenticator
 	  script included in contrib for authentication against Kerberos)
-	- fixed search result CVS output	
+	- fixed search result CVS output
 	- added configuration option (SAURON_RHF) for configuring
 	  which fields are mandatory in restricted host edit/add forms
 	- adduser: now displays user group when prompting for user creation
 	- expire-hosts: fixed erroneous (but harmless) warnings about
 	  hosts not having ethernet address
-     
-	
+
+
 0.5.0
 	- implemented host copy option
 	- added host history display button
@@ -282,9 +283,9 @@ CVS-CURRENT
 	- added "show hosts" button to network entry display
 	- update-dhcp-info now updates dhcp_date field only for
 	  DHCPACK or BOOTREPLY
-	- new user rights: max expiration time, default department 
-	- fixed SRV record support	
-	- fixed nondeterministic behaviour with multiple IPs in 
+	- new user rights: max expiration time, default department
+	- fixed SRV record support
+	- fixed nondeterministic behaviour with multiple IPs in
 	  'fixed-address' lines in dhcpd.conf
 	- search results sorting a'la browser.cgi
 	- hide "VLAN" info from normal users (now, configuration variable
@@ -293,11 +294,11 @@ CVS-CURRENT
 	- added privilege levels to {wks,mx}-templates, groups and nets
 	  tables
 	- added email field to users table and account expiration support
-	- added vlans table and VLAN (Layer-2 networks) management 
+	- added vlans table and VLAN (Layer-2 networks) management
 	- add new "info" fields to hosts table (asset ID)
 	- clear ether_alias ptrs from other hosts when deleting a host
 	- "Show Network Settings" button added to host display
-	- expiration (date) field now in use in hosts table	
-	
-	
-	
+	- expiration (date) field now in use in hosts table
+
+
+
