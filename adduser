@@ -41,7 +41,7 @@ unless ($opt_user) {
   $i=1;
 }
 fatal("Invalid username '$opt_user'!")
-  unless ($opt_user =~ /^[a-zA-Z0-9@.\-]{1,64}$/);
+  unless ($opt_user =~ /^[-.@a-zA-Z0-9]{1,64}$/);
 fatal("User allready exists!") unless (get_user($opt_user,\%user));
 undef %user;
 
