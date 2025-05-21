@@ -12,6 +12,7 @@ use Sauron::DB;
 use Sauron::Util;
 use Sauron::BackEnd;
 use Sauron::Sauron;
+use Text::Table;
 
 my ($PG_DIR,$PG_NAME) = ($0 =~ /^(.*\/)(.*)$/);
 $0 = $PG_NAME;
@@ -251,21 +252,32 @@ if ($opt_list) {
     }
   }
   else {
-    print 
-     "Login      Group      Name                      Email                  Superusr\n",
-     "---------- ---------- ------------------------- ---------------------- --------\n";
+    my $sep = \' | ';
+    my @columns = ("Login", $sep, "Group", $sep, "Name", $sep, "Email", $sep, "Superuser");
+
+    my $tb = Text::Table->new(@columns);
+
     undef @q;
     db_query("SELECT id,username,name,superuser,comment,email FROM users ".
 	     "ORDER BY username;",\@q);
+
     for $i (0..$#q) {
       db_query("SELECT g.name FROM user_groups g, user_rights r " .
                "WHERE g.id=r.rref AND r.rtype=0 AND r.type=2 AND " .
 	       " r.ref=$q[$i][0] ORDER BY g.id",\@qq);
-      $group=substr($qq[0][0],0,10);
-      printf "%-10s %-10s %-25s %-25s %-5s\n", 
-              $q[$i][1],$group,substr($q[$i][2],0,25),
-	      substr($q[$i][5],0,25),($q[$i][3] =~ /^(t|1)$/ ? 'Yes' : '');
+      $tb->add( 
+              $q[$i][1],  # login 
+              $qq[$i][0], # group
+              $q[$i][2],  # name
+	      $q[$i][5],  # email
+              ($q[$i][3] =~ /^(t|1)$/ ? 'Yes' : '') # is_superuser?
+            );
     }
+
+    # Printing table
+    print $tb->title();
+    print $tb->body_rule('-', '+');
+    print $tb->body();
   }
 
   exit 0;

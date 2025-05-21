@@ -27,7 +27,8 @@ REQUIREMENTS
 		- Digest::SHA1 module
 		- MIME::Base64
 		- Crypt::Cipher::RC5
-	- PostgresSQL [7.4 or newer (may work fine with earlier 7.x versions)] 
+		- Text::Table
+	- PostgresSQL [7.4 or newer (may work fine with earlier 7.x versions)]
 	  (or add support to your favorite db yourself :)
 	- www-server (Apache or any other www-server with CGI support)
 
@@ -38,18 +39,18 @@ DOWNLOAD
 	Sauron and related files are available from:
 	 WWW: http://sauron.jyu.fi/
                or
-              http://sourceforge.net/projects/sauron-dns/files/ 
+              http://sourceforge.net/projects/sauron-dns/files/
 
 	 FTP: ftp://ftp.jyu.fi/pub/sauron/
 
 
 TESTED PLATFORMS
 	Sauron is currently developed using Red Hat Linux,GNU/Debian Linux,
-	and Solaris but it should work pretty much on any Unix variant 
+	and Solaris but it should work pretty much on any Unix variant
 	(if required programs are available).
 
 
-INSTALLATION 
+INSTALLATION
 
   See User Guide for complete installation instruction. This section
   is only a quick overview of the installation process:
@@ -105,11 +106,11 @@ INSTALLATION
 
 COMMANDS
 
- addgroup	
+ addgroup
    Creates user groups. It's recommended to assign
    users to groups and assign privileges to groups and not
    directly to users.
-   
+
  addhosts
    Utility for adding hosts to a existing zone from given
    file. Input file format is same as in normal zone files.
@@ -117,7 +118,7 @@ COMMANDS
  adduser
    Creates new user accounts. Use --help option for more help.
 
- check-pending  
+ check-pending
    Program to be run from crontab that check for pending
    changes in database and sends notification of pending changes
    to address defined in configuration.
@@ -145,7 +146,7 @@ COMMANDS
    new server and related zones into Sauron.
 
  import-dhcp
-   Utility for updating existing server using dhcpd configuration; 
+   Utility for updating existing server using dhcpd configuration;
    adds Ethernet addressess for hosts and to builds network map for
    the server.
 
@@ -179,7 +180,7 @@ COMMANDS
    Utility for running SQL code from file into Sauron database.
 
  sauron
-   Program to for generating named/dhcpd configuration files from Sauron 
+   Program to for generating named/dhcpd configuration files from Sauron
    database for given server.
 
  status
@@ -197,5 +198,5 @@ SUGGESTED READING
 
 
 --
-Timo <tjko@iki.fi>			        
+Timo <tjko@iki.fi>
 
