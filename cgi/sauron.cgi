@@ -2,7 +2,6 @@
 #
 # sauron.cgi
 #
-# [Â‰ˆ~]
 # Copyright (c) Michal Kostenec <kostenec@civ.zcu.cz> 2013-2014.
 # Copyright (c) Timo Kokkonen <tjko@iki.fi>, 2000-2005.
 # All Rights Reserved.
@@ -16,6 +15,8 @@ use Sauron::BackEnd;
 use Sauron::CGIutil;
 use Sauron::CGI::Utils;
 use Sauron::Sauron;
+use utf8;
+use open ':encoding(UTF-8)', ':std';
 #use strict;
 
 $CGI::DISABLE_UPLOADS = 1; # no uploads
@@ -437,10 +438,10 @@ sub about_menu() {
         "a free DNS & DHCP management system<p>",
         "<hr noshade width=\"40%\"><b>Authors:</b>",
         "<br>Timo Kokkonen <i>&lt;tjko\@iki.fi&gt;</i>",
-        "<br>Michal Kostenec <i>&lt;kostenec\@civ.zcu.cz&gt;</i>",
-        "<br>Ales Padrta <i>&lt;apadrta\@civ.zcu.cz&gt;</i>",
+        "<br>Michal Kostƒõnec <i>&lt;kostenec\@civ.zcu.cz&gt;</i>",
+        "<br>Ale≈° Padrta <i>&lt;apadrta\@civ.zcu.cz&gt;</i>",
         "<hr width=\"30%\"><b>Logo Design:</b>",
-        "<br>Teemu L‰hteenm‰ki <i>&lt;tola\@iki.fi&gt;</i>",
+        "<br>Teemu L√§hteenm√§ki <i>&lt;tola\@iki.fi&gt;</i>",
         "<hr noshade width=\"40%\"><p>",
 	"</CENTER><BR><BR>";
   }
