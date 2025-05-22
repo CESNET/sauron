@@ -11,7 +11,7 @@ use Sauron::Util;
 use Sys::Syslog qw(:DEFAULT setlogsock);
 Sys::Syslog::setlogsock('unix');
 use Net::IP qw (:PROC);
-
+use Encode qw(encode);
 use strict;
 use vars qw(@ISA @EXPORT);
 
@@ -161,7 +161,7 @@ my($muser);
 sub write2log
 {
   #my $priority  = shift;
-  my $msg       = shift;
+  my $msg       = encode('UTF-8', shift);
   my $filename  = File::Basename::basename($0);
 
   Sys::Syslog::openlog($filename, "cons,pid", "debug");

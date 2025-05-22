@@ -11,6 +11,8 @@ use Sauron::DB;
 use Sauron::Util;
 use Sauron::BackEnd;
 use Sauron::Sauron;
+use Encode qw(decode);
+use utf8;
 
 load_config();
 
@@ -18,6 +20,8 @@ $user = (getpwuid($<))[0];
 set_muser($user);
 
 $i = ($#ARGV == -1 );   # If no args, become interactive
+
+@ARGV = map { decode('UTF-8', $_) } @ARGV;
 
 GetOptions("user=s","superuser","help|h","passwd=s","name=s",
 	   "group=s","comment=s","email=s","expiration=s");

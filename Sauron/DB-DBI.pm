@@ -7,6 +7,7 @@ use DBI;
 use Sauron::Util;
 use strict;
 use vars qw(@ISA @EXPORT);
+use utf8;
 
 use Sys::Syslog qw(:DEFAULT setlogsock);
 Sys::Syslog::setlogsock('unix');
@@ -59,11 +60,12 @@ sub db_connect2() {
   $user = ($main::DB_USER ? $main::DB_USER : '');
   $password = ($main::DB_PASSWORD ? $main::DB_PASSWORD : '');
 
-  $dbh = DBI->connect($dsn,$user,$password);
+  $dbh = DBI->connect($dsn,$user,$password,{AutoCommit=>1,RaiseError=>1,PrintError=>1,pg_enable_utf8 => 1});
   unless ($dbh) {
     error("db_connect() failed: " . $DBI::errstr);
     return 0;
   }
+  $dbh->do("SET CLIENT_ENCODING TO 'UTF8'");
 
   return 1;
 }

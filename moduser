@@ -13,6 +13,10 @@ use Sauron::Util;
 use Sauron::BackEnd;
 use Sauron::Sauron;
 use Text::Table;
+use utf8;
+
+binmode(STDOUT, ":utf8");
+
 
 my ($PG_DIR,$PG_NAME) = ($0 =~ /^(.*\/)(.*)$/);
 $0 = $PG_NAME;

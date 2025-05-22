@@ -131,6 +131,7 @@ $DB_PASSWORD = "bar";
 
 # specify charset for CGI interface (default is iso-8859-1)
 # $SAURON_CHARSET = 'iso-8859-15';
+$SAURON_CHARSET = 'UTF-8';
 
 # Set this to 1 to enable secure cookies. Note, this may cause problems
 # with some broken browsers, so it's not enabled by default.
