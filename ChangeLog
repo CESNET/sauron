@@ -2,6 +2,7 @@
 	[project moved to https://github.com/CESNET/sauron ]
 	- change libcrypt-cb5-perl to libcryptx-perl
 	- the username can be up to 64 characters long by Michal Švamberg
+	- added import of _dmarc records as Custom zone file entries by Michal Švamberg
 
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]
