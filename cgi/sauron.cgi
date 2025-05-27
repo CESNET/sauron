@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/usr/local/sauron
+#!/usr/bin/perl -CDS -I/usr/local/sauron
 #
 # sauron.cgi
 #
@@ -16,7 +16,6 @@ use Sauron::CGIutil;
 use Sauron::CGI::Utils;
 use Sauron::Sauron;
 use utf8;
-use open ':encoding(UTF-8)', ':std';
 #use strict;
 
 $CGI::DISABLE_UPLOADS = 1; # no uploads
