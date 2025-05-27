@@ -187,17 +187,17 @@ foreach $host (sort keys %zonedata) {
   $hosttype=8 if (@{$rec->{SRV}} > 0);
 
   # zentries
-  if (@{$rec->{TXT}} > 0) {
-    $res = add_record("txt_entries", 
-                      { type=>12,
-                        ref=>$zoneid,
-                        txt=>"$host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\""
-                      });
-    fatal("Failed to insert TXT record:\n   $host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\"") if ($res < 0);
-    next;
-  }
-
   if ($hosttype == 0) {
+    if (@{$rec->{TXT}} > 0) {
+      $res = add_record("txt_entries",
+			{ type=>12,
+			  ref=>$zoneid,
+			  txt=>"$host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\""
+			});
+      fatal("Failed to insert TXT record:\n   $host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\"") if ($res < 0);
+      next;
+    }
+
     print STDERR "Ignoring unknown host entry: $host\n";
     delete $zonedata{$host};
     next;
