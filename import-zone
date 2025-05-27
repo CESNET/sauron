@@ -19,7 +19,7 @@ load_config();
 ##############################
 
 GetOptions("help|h","verbose|v","notransaction","nameserver=s","zone=s",
-	   "group=s");
+     "group=s");
 
 if ($opt_help || @ARGV < 2) {
     print "syntax: $0 [options] <servername> <zone> [<zone file>]\n";
@@ -70,7 +70,7 @@ if ($opt_zone) {
 
 if ($opt_nameserver) {
     fatal("invalid nameserver IP/domainname specified: $opt_nameserver")
-	unless (valid_domainname($opt_nameserver) || is_cidr($opt_nameserver));
+  unless (valid_domainname($opt_nameserver) || is_cidr($opt_nameserver));
 }
 
 if ($opt_group) {
@@ -163,8 +163,8 @@ foreach $mx (keys %mxhash) {
     push @mxl, [0,$pri,$mxx,''];
   }
   $res = add_mx_template({zone=>$zoneid,
-			  name=>"$zonename:$mx_i_count",
-			  mx_l=>\@mxl});
+        name=>"$zonename:$mx_i_count",
+        mx_l=>\@mxl});
   fatal("cannot insert mx tamplate ($mx): ".db_lasterrormsg()) if ($res < 0);
   $mxhash{$mx}=$res;
 }
@@ -186,17 +186,18 @@ foreach $host (sort keys %zonedata) {
   $hosttype=3 if ($nslist eq '' && @{$rec->{A}} < 1 && @{$rec->{AAAA}} < 1 && @{$rec->{MX}} > 0);
   $hosttype=8 if (@{$rec->{SRV}} > 0);
 
+  if (@{$rec->{TXT}} > 0) {
+    $res = add_record("txt_entries", 
+                      { type=>12,
+                        ref=>$zoneid,
+                        txt=>"$host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\""
+                      });
+    fatal("Failed to insert TXT record:\n   $host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\"") if ($res < 0);
+    next;
+  }
+
   if ($hosttype == 0) {
     # zentries
-    if ($host2 == '_dmarc') {
-      $res = add_record("txt_entries", 
-                        { type=>12,
-                          ref=>$zoneid,
-                          txt=>"$host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\""
-                        });
-      fatal("failed to insert _dmarc record:\n   $host2 $rec->{TTL} IN TXT \"$rec->{TXT}[0]\"") if ($res < 0);
-      next;
-    }
     print STDERR "Ignoring unknown host entry: $host\n";
     delete $zonedata{$host};
     next;
@@ -205,8 +206,8 @@ foreach $host (sort keys %zonedata) {
   if ($hosttype == 2) {
     foreach $tmp (@{$rec->{NS}}) {
       if ($tmp =~ /^(\S*($host2))(\.$origin)?$/) {
-	print "glue record needed: $host ($tmp)\n";
-	push @gluelist, $1;
+  print "glue record needed: $host ($tmp)\n";
+  push @gluelist, $1;
       }
     }
   }
@@ -246,20 +247,20 @@ foreach $host (sort keys %zonedata) {
   }
 
   $res = add_host({zone=>$zoneid,
-		   type=>$hosttype,
-		   class=>$class,
-		   domain=>$host2,
-		   grp=>$gid,
-		   mx=>$mx,
-		   hinfo_hw=>$rec->{HINFO}[0],
-		   hinfo_sw=>$rec->{HINFO}[1],
-		   info=>$extrainfo,
-		   ttl=>$host_ttl,
-		   txt_l=>\@txt_l,
-		   ns_l=>\@ns_l,
-		   srv_l=>\@srv_l,
-		   ip=>\@ip_l
-		  });
+       type=>$hosttype,
+       class=>$class,
+       domain=>$host2,
+       grp=>$gid,
+       mx=>$mx,
+       hinfo_hw=>$rec->{HINFO}[0],
+       hinfo_sw=>$rec->{HINFO}[1],
+       info=>$extrainfo,
+       ttl=>$host_ttl,
+       txt_l=>\@txt_l,
+       ns_l=>\@ns_l,
+       srv_l=>\@srv_l,
+       ip=>\@ip_l
+      });
 
   fatal("failed to insert host record for: $host ") if ($res < 0);
   $rec->{ID}=$res;
@@ -286,12 +287,12 @@ foreach $host (sort keys %zonedata) {
 
   print "alias: $host ($host2) --> ($alias,$cname2)\n" if ($opt_verbose);
   $res = add_host({zone=>$zoneid,
-		   type=>4,
-		   domain=>$host2,
-		   class=>$class,
-		   alias=>$alias,
-		   cname_txt=>$cname2
-		  });
+       type=>4,
+       domain=>$host2,
+       class=>$class,
+       alias=>$alias,
+       cname_txt=>$cname2
+      });
   fatal("failed to insert alias (host) record for: $host") if ($res < 0);
 }
 
@@ -300,7 +301,7 @@ foreach $host (sort keys %zonedata) {
 if (@gluelist > 0) {
   for $host (@gluelist) {
     $res = db_exec("UPDATE hosts SET type=6 WHERE zone=$zoneid " .
-		   " AND domain='$host'");
+       " AND domain='$host'");
     error("failed to change host record type into glue record: $host")
       if ($res < 0);
   }
