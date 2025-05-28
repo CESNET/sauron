@@ -1,4 +1,4 @@
-#!/usr/bin/perl -CDS
+#!/usr/bin/perl
 #
 # moduser - utility to modify user/group rights
 #
@@ -13,7 +13,6 @@ use Sauron::Util;
 use Sauron::BackEnd;
 use Sauron::Sauron;
 use Text::Table;
-use utf8;
 
 my ($PG_DIR,$PG_NAME) = ($0 =~ /^(.*\/)(.*)$/);
 $0 = $PG_NAME;
