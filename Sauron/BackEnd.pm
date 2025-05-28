@@ -11,6 +11,7 @@ use Sauron::Util;
 use Sys::Syslog qw(:DEFAULT setlogsock);
 Sys::Syslog::setlogsock('unix');
 use Net::IP qw (:PROC);
+
 use strict;
 use vars qw(@ISA @EXPORT);
 
@@ -159,7 +160,7 @@ my($muser);
 
 sub write2log
 {
-  my $priority  = shift;
+  #my $priority  = shift;
   my $msg       = shift;
   my $filename  = File::Basename::basename($0);
 
