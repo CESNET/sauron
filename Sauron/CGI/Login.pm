@@ -328,18 +328,11 @@ sub menu_handler {
 
     # net permissions
     # Fixed better than previous, but still a bit hack
-    $s = join(',',(keys %{$perms->{net}})),"\n";
+    $s = join(',',(keys %{$perms->{net}})),"\n";    
     undef @q;
-    if ($s eq '') {
-      db_query("SELECT s.name,n.net,n.range_start,n.range_end " .
-               "FROM servers s, nets n WHERE n.server=s.id " .
-	       "ORDER BY name,net;",\@q);
-    }
-    else {
-      db_query("SELECT s.name,n.net,n.range_start,n.range_end " .
-               "FROM servers s, nets n WHERE n.server=s.id AND " .
-               "n.id in ($s) ORDER BY name,net;",\@q);
-    }
+    db_query("SELECT s.name,n.net,n.range_start,n.range_end " .
+	     "FROM servers s, nets n WHERE n.server=s.id AND " .
+	     "n.id in ($s) ORDER BY name,net;",\@q);
     for $s (0..$#q) {
       $tmp="$q[$s][0]:$q[$s][1]";
       print "<TR bgcolor=\"#dddddd\">",td("Net"),td("$tmp"),
