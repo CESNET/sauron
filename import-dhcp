@@ -20,12 +20,13 @@ load_config();
 ##############################
 
 GetOptions("help|h","verbose|v","dir=s","notransaction","chaosnet=s",
-	   "global","dhcp6");
+	   "global","dhcp6","kea");
 
 if ($opt_help || @ARGV < 2) {
-    print "syntax: $0 [options] <servername> <dhcpd.conf file>\n";
+    print "syntax: $0 [options] <servername> <(dhcpd|kea).conf file>\n";
     print "options:\n",
           "\t--dhcp6\t\t\timport DHCPv6 configuration\t\n",
+          "\t--kea\t\t\timport KEA configuration\t\n",
           "\t--dir=<directory>\tdirectory where included files are located\n",
 	  "\t\t\t\t(if not in directory specified in dhcpd.conf)\n",
 	  "\t--chaosnet=<name>\ttreat this shared-network as default VLAN\n",
@@ -39,6 +40,7 @@ if ($opt_help || @ARGV < 2) {
 
 $opt_verbose = ($opt_verbose ? 1 : 0);
 $opt_global = ($opt_global ? 1 : 0);
+$opt_kea = ($opt_kea ? 1 : 0);
 $servername = $ARGV[0];
 $dhcpdf = $ARGV[1];
 $user = (getpwuid($<))[0];
@@ -62,7 +64,14 @@ if ($dhcpdf =~ /(^.*\/)/) {
 
 # parse named.conf
 undef %data;
-process_dhcpdconf($dhcpdf,\%data,$opt_dhcp6);
+$opt_kea ? process_keaconf($dhcpdf,\%data,$opt_dhcp6)
+         : process_dhcpdconf($dhcpdf,\%data,$opt_dhcp6);
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+use Data::Dumper;       # !!!!!!!!!!!!!!!!
+print Dumper(\%data);   # !!!!!!!!!!!!!!!!
+exit 0;                 # !!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 unless ($opt_notransaction) {
   db_begin();

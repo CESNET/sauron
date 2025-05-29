@@ -25,9 +25,11 @@ REQUIREMENTS
 		- Digest::MD5 module
 		- Digest::HMAC module
 		- Digest::SHA1 module
-		- MIME::Base64
-		- Crypt::Cipher::RC5
-		- Text::Table
+		- MIME::Base64 module
+		- Crypt::Cipher::RC5 module
+		- Text::Table module
+                - JSON module
+                - Data::Dumper module
 	- PostgresSQL [7.4 or newer (may work fine with earlier 7.x versions)]
 	  (or add support to your favorite db yourself :)
 	- www-server (Apache or any other www-server with CGI support)
