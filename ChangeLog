@@ -2,6 +2,7 @@
 	[project moved to https://github.com/CESNET/sauron ]
 	- change libcrypt-cb5-perl to libcryptx-perl
 	- the username can be up to 64 characters long by Michal Švamberg
+	- charset is now utf8 by Michal Švamberg
 	- the left menu displays only the items that the user has the right 
 	  to access by Michal Švamberg
 
