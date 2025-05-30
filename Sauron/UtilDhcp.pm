@@ -47,13 +47,89 @@ sub load_json_file($) {
 }
 
 # parse kea.conf file, build hash of all entries in the file
+sub process_keaconf_subnet($$$$) {
+  my ($kea, $data, $v6, $shnet_name) = @_;
+  my $v = $v6 ? '6' : '4';
+  my $vs = $v6 ? '6' : '';
+  
+  print "process_keaconf_subnet(KEA,DATA,$v6,$shnet_name)\n" if ($debug);
+
+  # shared-networks:subnet -> subnet
+  foreach my $ref_subnet ($$kea{"subnet$v"}) {
+    push @{$$data{"subnet$vs"}{$$ref_subnet{subnet}}}, "VLAN $shnet_name" if defined $shnet_name;
+
+    foreach my $sub_key (keys %$ref_subnet) {
+      for ($sub_key) {
+        /^option-data$/ and do {
+            # option-data -> group
+            foreach my $ref_opt (@{$$ref_subnet{"option-data"}}) {
+      	for ($$ref_opt{name}) {
+      	  /.*/ and do { 
+                    push @{$$data{group}{"group$v-$shnet_name-$$ref_subnet{id}"}}, "option $$ref_opt{name} $$ref_opt{data};"; 
+                    last 
+                  };
+      	}
+            }
+            last;
+          };
+        /^reservations$/ and do {
+            foreach my $ref_res (@{$$ref_subnet{reservations}}) {
+               my $hostname = "";
+               if (exists($$ref_res{hostname})) {
+                 $hostname = $$ref_res{hostname};
+               }
+               else {
+                 my $af = $v6 ? AF_INET6 : AF_INET;
+                 my $packed_ip = inet_pton($af, $$ref_res{'ip-address'});
+                 $hostname = gethostbyaddr($packed_ip, $af);
+      	 }
+               push @{$$data{host}{"$hostname"}}, (
+                          "GROUP group$v-$shnet_name-$$ref_subnet{id}", 
+                          "fixed-address $$ref_res{'ip-address'};",
+                          "hardware ethernet $$ref_res{'hw-address'};"
+                        );
+                                                 
+            }
+            last ;
+          };
+        /^pools$/ and do {
+            my $countpools = 0;
+            foreach my $ref_pools (@{$$ref_subnet{"pools"}}) {
+              $countpools++;
+              for (keys %{$$ref_pools}) {
+                /^pool$/ and do {
+                  $$ref_pools{"pool$vs"} =~ m/^(\S+)\s*-\s*(\S+)$/;
+                  push @{$$data{"pool$vs"}{"pool$vs-$$ref_subnet{id}-$countpools"}}, 
+                       "range$vs $1 $2;";
+                  next;
+                };
+                /.*/ and do {
+                  push @{$$data{"pool$vs"}{"pool$vs-$$ref_subnet{id}-$countpools"}{$_}},
+                       "$$ref_pools{$_};";
+                  next;
+                };
+              }
+            }
+            last;
+          };
+        /^(id|subnet)$/ and do { last; };
+        /.*/ and do {
+            push @{$$data{group}{"group$v-$shnet_name-$$ref_subnet{id}"}}, "$sub_key $$ref_subnet{$sub_key};";
+            last;
+          };
+      } 
+    }
+  }
+  return 0;
+}
+
 sub process_keaconf($$$) {
   my ($filename,$data,$v6)=@_;
   my ($kea_json,$kea,%state);
   my $v = $v6 ? '6' : '4';
   my $vs = $v6 ? '6' : '';
 
-  print "process_dhcpdconf($filename,DATA)\n" if ($debug);
+  print "process_keaconf($filename,DATA,$v6)\n" if ($debug);
 
   $kea_json = load_json_file($filename);
   $kea_json =~ s/,\s*}/}/g;   # Resolves commas after the last element in the object
@@ -81,91 +157,28 @@ sub process_keaconf($$$) {
   foreach my $ref_shnet (@{$$kea{"Dhcp$v"}{'shared-networks'}}) {
     push @{$$data{'shared-network'}{$$ref_shnet{name}}}, () if exists $$ref_shnet{name};
 
-    # shared-networks:subnet -> subnet
-    foreach my $ref_subnet (@{$$ref_shnet{"subnet$v"}}) {
-      push @{$$data{"subnet$vs"}{$$ref_subnet{subnet}}}, "VLAN $$ref_shnet{name}" if exists $$ref_shnet{name};
-
-      foreach my $sub_key (keys %$ref_subnet) {
-        for ($sub_key) {
-          /^option-data$/ and do {
-	      # option-data -> group
-	      foreach my $ref_opt (@{$$ref_subnet{"option-data"}}) {
-		for ($$ref_opt{name}) {
-		  /.*/ and do { 
-                      push @{$$data{group}{"group$v-$$ref_shnet{name}-$$ref_subnet{id}"}}, "option $$ref_opt{name} $$ref_opt{data};"; 
-                      last 
-                    };
-		}
-	      }
-	      last;
-	    };
-          /^reservations$/ and do {
-	      foreach my $ref_res (@{$$ref_subnet{reservations}}) {
-                 my $hostname = "";
-                 if (exists($$ref_res{hostname})) {
-                   $hostname = $$ref_res{hostname};
-                 }
-                 else {
-                   my $af = $v6 ? AF_INET6 : AF_INET;
-                   my $packed_ip = inet_pton($af, $$ref_res{'ip-address'});
-                   $hostname = gethostbyaddr($packed_ip, $af);
-		 }
-                 push @{$$data{host}{"$hostname"}}, (
-                            "GROUP group$v-$$ref_shnet{name}-$$ref_subnet{id}", 
-                            "fixed-address $$ref_res{'ip-address'};",
-                            "hardware ethernet $$ref_res{'hw-address'};"
-                          );
-                                                   
-              }
-              last ;
-            };
-          /^pools$/ and do {
-              my $countpools = 0;
-	      foreach my $ref_pools (@{$$ref_subnet{"pools"}}) {
-                $countpools++;
-                for (keys %{$$ref_pools}) {
-                  /^pool$/ and do {
-                    $$ref_pools{"pool$vs"} =~ m/^(\S+)\s*-\s*(\S+)$/;
-                    push @{$$data{"pool$vs"}{"pool$vs-$$ref_subnet{id}-$countpools"}}, 
-                         "range$vs $1 $2;";
-                    next;
-                  };
-                  /.*/ and do {
-                    push @{$$data{"pool$vs"}{"pool$vs-$$ref_subnet{id}-$countpools"}{$_}},
-                         "$$ref_pools{$_};";
-                    next;
-                  };
-                }
-
-
-              }
-              last;
-            };
-          /^(id|subnet)$/ and do { last; };
-          /.*/ and do {
-              push @{$$data{group}{"group$v-$$ref_shnet{name}-$$ref_subnet{id}"}}, "$sub_key $$ref_subnet{$sub_key};";
-              last;
-	    };
-        } 
-      }
-    }
-
-    # vsechny klice v 'subnet' je treba prejmenovat z '147.228.1.0/24' na
-    # '147.228.1.0 netmask 255.255.255.0' ale jen u IPv4!
-    unless ($v6) {
-      foreach my $key (keys %{$$data{subnet}}) {
-        # Vytvořte nový klíč s postfixem '_tst'
-        my $block = Net::Netmask->new($key) or die Net::Netmask::pm_error();
-    
-        # Přiřaďte hodnotu starého klíče do nového
-        $$data{subnet}{$block->base() . " netmask " . $block->mask()} = $$data{subnet}{$key};
-    
-        # Odstraňte starý klíč
-        delete $$data{subnet}{$key};
-      }
-    } 
+    process_keaconf_subnet($ref_shnet, 
+                           $data, 
+                           $v6, 
+                           (defined $$ref_shnet{name} ? $$ref_shnet{name} : undef)
+                          );   
   }
 
+
+  # vsechny klice v 'subnet' je treba prejmenovat z '147.228.1.0/24' na
+  # '147.228.1.0 netmask 255.255.255.0' ale jen u IPv4!
+  unless ($v6) {
+    foreach my $key (keys %{$$data{subnet}}) {
+      # Vytvořte nový klíč s postfixem '_tst'
+      my $block = Net::Netmask->new($key) or die Net::Netmask::pm_error();
+  
+      # Přiřaďte hodnotu starého klíče do nového
+      $$data{subnet}{$block->base() . " netmask " . $block->mask()} = $$data{subnet}{$key};
+  
+      # Odstraňte starý klíč
+      delete $$data{subnet}{$key};
+    }
+  } 
 
   #TODO: pokracuj zde # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return 0;  
