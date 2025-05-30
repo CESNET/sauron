@@ -340,7 +340,7 @@ sub menu_handler {
     "Available servers:",p,
       scrolling_list(-width=>'100%',-name=>'server_list',
 		   -size=>'10',-values=>\@l,-labels=>\%srec),
-      br,submit(-name=>'server_select_submit',-value=>'Select server'),
+      br,submit(-name=>'server_select_submit',-value=>'Select server'),
       end_form;
 
 }
