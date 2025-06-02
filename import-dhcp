@@ -68,9 +68,9 @@ $opt_kea ? process_keaconf($dhcpdf,\%data,$opt_dhcp6)
          : process_dhcpdconf($dhcpdf,\%data,$opt_dhcp6);
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-use Data::Dumper;       # !!!!!!!!!!!!!!!!
-print Dumper(\%data);   # !!!!!!!!!!!!!!!!
-exit 0;                 # !!!!!!!!!!!!!!!!
+#use Data::Dumper;       # !!!!!!!!!!!!!!!!
+#print Dumper(\%data);   # !!!!!!!!!!!!!!!!
+#exit 0;                 # !!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 unless ($opt_notransaction) {
