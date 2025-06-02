@@ -6,6 +6,7 @@
 	  to access by Michal Švamberg
 	- added import of TXT records as Custom zone file entries by Michal Švamberg
 	- charset is now utf8 by Michal Švamberg
+	- add basic support for KEA configuration file import by Michal Švamberg
 
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]
