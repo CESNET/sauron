@@ -60,37 +60,37 @@ $debug_mode = $SAURON_DEBUG_MODE;
 			['Show Current',''],
 			['Select','sub=select'],
 			[],
-			['Add','sub=add'],
-			['Delete','sub=del'],
-			['Edit','sub=edit']
+			['Add','sub=add','root'],
+			['Delete','sub=del','root'],
+			['Edit','sub=edit','root']
 		       ],
 	    'zones'=>[
 		      ['Show Current',''],
-		      ['Show pending','sub=pending'],
+		      ['Show pending','sub=pending',['zone','R']],
 		      [],
 		      ['Select','sub=select'],
 		      [],
-		      ['Add','sub=add'],
-		      ['Copy','sub=Copy'],
-		      ['Delete','sub=Delete'],
-		      ['Edit','sub=Edit'],
+		      ['Add','sub=add','root'],
+		      ['Copy','sub=Copy','root'],
+		      ['Delete','sub=Delete','root'],
+		      ['Edit','sub=Edit','root'],
 		      [],
-		      ['Add Default Zones','sub=AddDefaults']
+		      ['Add Default Zones','sub=AddDefaults','root']
 		     ],
 	    'nets'=>[
 		     ['Networks',''],
 		     ['&nbsp; + Subnets','list=sub'],
 		     ['&nbsp; + All','list=all'],
 		     [],
-		     ['Add net','sub=addnet'],
-		     ['Add subnet','sub=addsub'],
-		     ['Add virtual subnet','sub=addvsub'],
+		     ['Add net','sub=addnet','root'],
+		     ['Add subnet','sub=addsub','root'],
+		     ['Add virtual subnet','sub=addvsub','root'],
 		     [],
-		     ['VLANs','sub=vlans'],
-		     ['Add vlan','sub=addvlan'],
+		     ['VLANs','sub=vlans',['level',$main::ALEVEL_VLANS]],
+		     ['Add vlan','sub=addvlan','root'],
 		     [],
-		     ['VMPS','sub=vmps'],
-		     ['Add VMPS','sub=addvmps']
+		     ['VMPS','sub=vmps',['level',$main::ALEVEL_VLANS]],
+		     ['Add VMPS','sub=addvmps','root']
 		    ],
 	    'templates'=>[
 			  ['Show MX','sub=mx'],
@@ -99,9 +99,9 @@ $debug_mode = $SAURON_DEBUG_MODE;
 			  ['Show HINFO','sub=hinfo'],
 			  [],
 			  ['Add MX','sub=addmx'],
-			  ['Add WKS','sub=addwks'],
-			  ['Add Prn Class','sub=addpc'],
-			  ['Add HINFO','sub=addhinfo']
+			  ['Add WKS','sub=addwks','root'],
+			  ['Add Prn Class','sub=addpc','root'],
+			  ['Add HINFO','sub=addhinfo','root']
 			 ],
 	    'groups'=>[
 		       ['Groups',''],
@@ -109,10 +109,10 @@ $debug_mode = $SAURON_DEBUG_MODE;
 		       ['Add','sub=add']
 		      ],
 	    'acls'=>[
-		       ['ACLs',''],
-		       ['Keys','sub=keys'],
+		       ['ACLs','', ['level', $main::ALEVEL_ACLS]],
+		       ['Keys','sub=keys', ['level', $main::ALEVEL_ACLS]],
 		       [],
-		       ['Add ACL','sub=addacl']
+		       ['Add ACL','sub=addacl','root']
 		      ],
 	    'hosts'=>[
 		      ['Search',''],
@@ -121,26 +121,26 @@ $debug_mode = $SAURON_DEBUG_MODE;
 		      [],
 		      ['Add host','sub=add&type=1'],
 		      [],
-		      ['Add alias','sub=add&type=4'],
+		      ['Add alias','sub=add&type=4',['flags','SCNAME']],
 		      [],
-		      ['Add MX entry','sub=add&type=3'],
-		      ['Add delegation','sub=add&type=2'],
-		      ['Add glue rec.','sub=add&type=6'],
-		      ['Add DHCP entry','sub=add&type=9'],
-		      ['Add printer','sub=add&type=5'],
-		      ['Add SRV rec.','sub=add&type=8'],
+		      ['Add MX entry','sub=add&type=3',['flags','MX']],
+		      ['Add delegation','sub=add&type=2',['flags','DELEG']],
+		      ['Add glue rec.','sub=add&type=6',['flags','GLUE']],
+		      ['Add DHCP entry','sub=add&type=9',['flags','DHCP']],
+		      ['Add printer','sub=add&type=5',['flags','PRINTER']],
+		      ['Add SRV rec.','sub=add&type=8',['flags','SRV']],
 		      [],
-		      ['Add reservation','sub=add&type=101']
+		      ['Add reservation','sub=add&type=101',['flags','RESERV']]
 		     ],
 	    'login'=>[
 		      ['User Info',''],
 		      ['Who','sub=who'],
 		      ['News (motd)','sub=motd'],
 		      [],
-		      ['Login','sub=login'],
-		      ['Logout','sub=logout'],
+		      ['Login','sub=login',['equal',[$main::SAURON_AUTH_MODE, '0']]],
+		      ['Logout','sub=logout',['equal',[$main::SAURON_AUTH_MODE, '0']]],
 		      [],
-		      ['Change password','sub=passwd'],
+		      ['Change password','sub=passwd',['equal',[$main::SAURON_AUTH_MODE, '0']]],
 		      ['Edit settings','sub=edit'],
 		      ['Save defaults','sub=save'],
 		      ['Clear defaults','sub=clear'],
@@ -737,6 +737,7 @@ sub left_menu($) {
   $url.="?menu=$menu";
   if (defined $l) {
     for $i (0..$#{$l}) {
+      next if (ref($$l[$i][2]) eq 'ARRAY') and check_perms($$l[$i][2][0], $$l[$i][2][1], 1);
       if ($#{$$l[$i]} < 1) {
 	print Tr({-bgcolor=>'#cccccc',-height=>5},td(''));
 	next;

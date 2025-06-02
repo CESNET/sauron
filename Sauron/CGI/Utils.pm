@@ -161,6 +161,11 @@ sub chk_perms($$$$) {
     alert1("Your are not authorized to add/modify: $rule") unless ($quiet);
     return 1;
   }
+  elsif ($type eq 'equal') {
+    return 0 if ("$$rule[0]" eq "$$rule[1]");
+    alert1("Your equal condition is not equal.") unless ($quiet);
+    return 1;
+  }
 
   alert1("Access to $type denied") unless ($quiet);
   return 1;
