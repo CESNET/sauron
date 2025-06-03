@@ -431,7 +431,7 @@ sub process_zonedns($$$$) {
             push @{$rec->{CAA}}, join(" ",($rr->flags,$rr->tag,$rr->value));
 	}
         elsif ($type eq 'DS') {
-            push @{$rec->{DS}}, add_origin(join(" ",($rr->keytag,$rr->algorithm,$rr->digtype,$rr->digest), $origin));
+            push @{$rec->{DS}}, join(" ",($rr->keytag,$rr->algorithm,$rr->digtype,$rr->digest));
 	}
 	elsif ($type eq 'SRV') {
 	    push @{$rec->{SRV}}, join(" ",($rr->priority,$rr->weight,
