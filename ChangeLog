@@ -7,6 +7,7 @@
 	- added import of TXT records as Custom zone file entries by Michal Švamberg
 	- charset is now utf8 by Michal Švamberg
 	- add import CAA records into Custom zone file entries by Michal Švamberg
+	- fix import of multiple TXT zone records by Michal Švamberg
 	- add import DS records into Custom zone file entries by Michal Švamberg
 
 0.7.4
