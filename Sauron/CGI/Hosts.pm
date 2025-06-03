@@ -1612,7 +1612,7 @@ sub menu_handler {
 	    submit(-name=>'sub',-value=>'Copy'),
 	    " ";
       print submit(-name=>'sub',-value=>'Move'), " " if ($host{type} == 1);
-      print submit(-name=>'sub',-value=>'Alias'), " " if ($host{type} == 1);
+      print submit(-name=>'sub',-value=>'Alias'), " " if (($host{type} == 1) and !check_perms('flags','CNAME',1));
       print submit(-name=>'sub',-value=>'Disable'), " " if ($host{type} == 1);
       print submit(-name=>'sub',-value=>'Enable'), " " if ($host{type} == 101);
     }
