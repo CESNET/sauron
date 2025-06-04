@@ -214,6 +214,9 @@ install: make_dirs
 		$(INSTALL_ROOT)/$(etcdir)/config-browser; \
 	    $(PERL) -p -i -e 's@^\$$PROG_DIR = "/usr/local/sauron/";@\$$PROG_DIR = "$(bindir)/";@;' $(INSTALL_ROOT)/$(etcdir)/config-browser; \
 	fi
+	if [ ! -f $(INSTALL_ROOT)/$(etcdir)/restrict.yaml ]; then \
+	  $(INSTALL) -m 644 restrict.yaml $(INSTALL_ROOT)/$(etcdir)/restrict.yaml; \
+	fi
 	@for f in $(PROGS); do \
 		$(INSTALL) -m 755 $$f $(INSTALL_ROOT)/$(bindir); \
 	done

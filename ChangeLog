@@ -8,6 +8,7 @@
 	- charset is now utf8 by Michal Švamberg
 	- add import CAA records into Custom zone file entries by Michal Švamberg
 	- fix import of multiple TXT zone records by Michal Švamberg
+	- forms can be limited by restrict.yaml file by Michal Švamberg
 
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]

@@ -11,6 +11,8 @@ use Sauron::DB;
 use Sauron::Util;
 use Sauron::BackEnd;
 use Net::IP qw(:PROC);
+use YAML::XS 'LoadFile';
+use Data::Dumper;
 
 use strict;
 use vars qw(@ISA @EXPORT);
@@ -45,6 +47,56 @@ our $inetFamily4 = 0;
 our $inetFamily6 = 0;
 our $inetNet = undef;
 our $formduid = undef;
+
+my $restrict_cache = undef;
+
+sub is_restricted($) {
+  my ($tag) = @_;
+  return 0 if $tag =~/^$/;
+  my (@q, $group, $rtag);
+  my $module=(split /::/, (caller(1))[0])[-1];
+  my $restrict_file = $main::CONFIG_FILE;
+  $restrict_file =~ s/[^\/]+$/restrict.yaml/;
+
+  if (!$restrict_cache) {
+    if (-e $restrict_file) {
+      $restrict_cache = LoadFile($restrict_file);
+    }
+    else {
+      return 0; # not restricted (false), config file is not exists
+    }
+  }
+
+  db_query("SELECT g.name FROM user_groups g, user_rights r " .
+           "WHERE g.id=r.rref AND r.rtype=0 AND r.type=2 AND r.ref=$main::state{uid} " .
+           " ORDER BY g.id;",\@q);
+
+  #print "<pre>" . Dumper (@{$q[0]}) . "</pre>\n";
+
+  foreach $group (@{$q[0]}) {
+    # pro kazdou skupinu precti seznam tagu, pokud tento tag v nejake chybi, dej false
+    #print "<pre>" . Dumper($restrict_cache) . "</pre>\n";
+    #print "<pre>group: $group\nmodule: $module\n</pre>";
+
+    if (exists $restrict_cache->{$group}->{$module}) {
+      my @list = @{$restrict_cache->{$group}->{$module}};
+
+      # Ověřit, zda $test je v seznamu
+      if (grep { $_ eq $tag } @list) {
+        #print "Prvek '$tag'  je  v seznamu pro skupinu $group v $module.\n";
+      } else {
+        #print "Prvek '$tag' NENI v seznamu pro skupinu $group v $module.\n";
+        return 0;
+      }
+    }
+    else {
+      #print "Restrict $group->$module neexistuje <br>\n";
+      return 0;
+    }
+  }
+  # je ve vsech skupinach, vracim true (je restricted)
+  return 1;
+}
 
 sub cgi_util_set_zone($$) {
   my ($id,$name) = @_;
@@ -599,6 +651,8 @@ sub form_magic($$$) {
       next unless ($val =~ /^($e)$/);
     }
     next if ($rec->{no_edit});
+    # TODO
+    next if is_restricted($rec->{tag});
 
     print "<TR ".($form->{bgcolor}?" bgcolor=\"$form->{bgcolor}\" ":'').">";
 

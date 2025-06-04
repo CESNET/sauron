@@ -1,0 +1,18 @@
+# List of group/package/tag from forms that will be restricted (not showed).
+# Sauron used same path as 'config' file location (typicaly /usr/local/etc/sauron/)
+
+# structure and commands for listing items
+#
+# <group_name>:          #  ./modgroup --list
+#   <perl_package_name>: #  grep ^package /usr/local/sauron/Sauron/CGI/*.pm  
+#     - <tag_name>       #  grep 'tag=>' /usr/local/sauron/Sauron/CGI/*.pm
+#     - <tag_name>       
+
+sample:
+  Hosts:
+    - mx
+    - expiration
+
+  Zones:
+    - mx
+
