@@ -220,7 +220,7 @@ foreach $host (sort keys %zonedata) {
 			    ref=>$zoneid,
 			    txt=>"$host2 $rec->{TTL} IN DS $tmp"
 			  });
-        fatal("Failed to insert TXT record:\n   $host2 $rec->{TTL} IN DS $tmp") if ($res < 0);
+        fatal("Failed to insert DS record:\n   $host2 $rec->{TTL} IN DS $tmp") if ($res < 0);
       }
     }
   }
