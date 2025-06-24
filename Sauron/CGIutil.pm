@@ -53,6 +53,7 @@ my $restrict_cache = undef;
 sub is_restricted($) {
   my ($tag) = @_;
   return 0 if $tag =~/^$/;
+  return 0 if (%main::state{superuser} eq 'yes');  # superuser is always permitted
   my (@q, $group, $rtag);
   my $module=(split /::/, (caller(1))[0])[-1];
   my $restrict_file = $main::CONFIG_FILE;
