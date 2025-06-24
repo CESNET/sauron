@@ -73,6 +73,7 @@ sub is_restricted($) {
            " ORDER BY g.id;",\@q);
 
   #print "<pre>" . Dumper (@{$q[0]}) . "</pre>\n";
+  return 0 if (scalar(@{$q[0]}) == 0); # user is not listed in any group
 
   foreach $group (@{$q[0]}) {
     # pro kazdou skupinu precti seznam tagu, pokud tento tag v nejake chybi, dej false
