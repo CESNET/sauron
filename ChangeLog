@@ -9,6 +9,7 @@
 	- add import CAA records into Custom zone file entries by Michal Švamberg
 	- fix import of multiple TXT zone records by Michal Švamberg
 	- add import DS records into Custom zone file entries by Michal Švamberg
+	- add import SSHFP records by Michal Švamberg
 
 0.7.4
 	[project moved to sourceforge and switched to use git instead of cvs]
