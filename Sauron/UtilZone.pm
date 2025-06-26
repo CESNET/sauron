@@ -124,7 +124,7 @@ sub process_zonefile($$$$) {
 	unless ($class =~ /^(IN|CS|CH|HS)$/);
 
     # type
-    unless ($type =~ /^(SOA|A|AAAA|PTR|CNAME|MX|NS|TXT|HINFO|WKS|MB|MG|MD|MF|MINFO|MR|AFSDB|ISDN|RP|RT|X25|PX|SRV|NAPTR|CAA|DS)$/) {
+    unless ($type =~ /^(SOA|A|AAAA|PTR|CNAME|MX|NS|TXT|HINFO|WKS|MB|MG|MD|MF|MINFO|MR|AFSDB|ISDN|RP|RT|X25|PX|SRV|NAPTR|CAA|DS|SSHFP)$/) {
       if ($ext_flag > 0) {
 	unless ($type =~ /^(DHCP|ALIAS|AREC|ROUTER|PRINTER|BOOTP|INFO|ETHER2?|GROUP|BOOTP|MUUTA[0-9]|TYPE|SERIAL|PCTCP)$/) {
 	  print STDERR "$filename($.): unsupported RR type '$type'\n";
@@ -152,6 +152,7 @@ sub process_zonefile($$$$) {
 	      WKS => [],
               CAA => [],
               DS => [],
+              SSHFP => [],
 
 	      RP => [],
 	      SRV => [],
@@ -242,6 +243,11 @@ sub process_zonefile($$$$) {
       fatal("$filename($.): invalid CAA record: $fline")
         unless ($line[0]=~/^[01]$/ && $line[1]=~/^[a-zA-Z0-9]+$/ && $line[2] ne '');
       push @{$rec->{CAA}}, "$line[0] $line[1] $line[2]";
+    }
+    elsif ($type eq 'SSHFP') {
+      fatal("$filename($.): invalid SSHFP record: $fline")
+        unless ($line[0]=~/^\d+$/ && $line[1]=~/^\d+$/ && $line[2]=~/^[0-9a-f]+$/);
+      push @{$rec->{SSHFP}}, "$line[0] $line[1] $line[2]";
     }
     elsif ($type eq 'DS') {
       fatal("$filename($.): invalid DS record: $fline")
@@ -365,7 +371,7 @@ sub process_zonedns($$$$) {
 	$ttl = $rr->ttl;
 
 	next unless ($class eq 'IN');
-	unless ($type =~ /^(SOA|A|PTR|CNAME|MX|NS|TXT|HINFO|SRV|WKS|CAA|DS)$/) {
+	unless ($type =~ /^(SOA|A|PTR|CNAME|MX|NS|TXT|HINFO|SRV|WKS|CAA|DS|SSHFP)$/) {
 	    $ucount++;
 	    print "Skipping: " . $rr->string . "\n" if ($verbose);
 	    next;
@@ -384,6 +390,7 @@ sub process_zonedns($$$$) {
 		TXT => [],
 		HINFO => ['',''],
                 CAA => [],
+                SSHFP => [],
                 DS => [],
 		WKS => [],
 		SRV => []
@@ -429,6 +436,9 @@ sub process_zonedns($$$$) {
 	}
         elsif ($type eq 'CAA') {
             push @{$rec->{CAA}}, join(" ",($rr->flags,$rr->tag,$rr->value));
+	}
+        elsif ($type eq 'SSHFP') {
+            push @{$rec->{SSHFP}}, join(" ",($rr->flags,$rr->tag,$rr->value));
 	}
         elsif ($type eq 'DS') {
             push @{$rec->{DS}}, join(" ",($rr->keytag,$rr->algorithm,$rr->digtype,$rr->digest));
