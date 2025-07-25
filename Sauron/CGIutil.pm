@@ -76,27 +76,27 @@ sub is_restricted($) {
   return 0 if (scalar(@{$q[0]}) == 0); # user is not listed in any group
 
   foreach $group (@{$q[0]}) {
-    # pro kazdou skupinu precti seznam tagu, pokud tento tag v nejake chybi, dej false
+    # read the list of tags for each group, if this tag is missing, set false
     #print "<pre>" . Dumper($restrict_cache) . "</pre>\n";
     #print "<pre>group: $group\nmodule: $module\n</pre>";
 
     if (exists $restrict_cache->{$group}->{$module}) {
       my @list = @{$restrict_cache->{$group}->{$module}};
 
-      # Ověřit, zda $test je v seznamu
+      # Check if $test is in the list
       if (grep { $_ eq $tag } @list) {
-        #print "Prvek '$tag'  je  v seznamu pro skupinu $group v $module.\n";
+        #print "The element '$tag' is in the list for group $group in $module\n";
       } else {
-        #print "Prvek '$tag' NENI v seznamu pro skupinu $group v $module.\n";
+        #print "The element '$tag' is NOT in the list for group $group in $module\n";
         return 0;
       }
     }
     else {
-      #print "Restrict $group->$module neexistuje <br>\n";
+      #print "Restrict $group->$module doesn't exists <br>\n";
       return 0;
     }
   }
-  # je ve vsech skupinach, vracim true (je restricted)
+  # return true (it is restricted)
   return 1;
 }
 
